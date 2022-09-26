@@ -15,6 +15,7 @@
 
         {% if is_granted('IS_AUTHENTICATED_FULLY') %}
             <div class="comment-area mb-5">
+            {# indique que le form applique les champs de comment form #}
                 {{ form(commentForm, { 'attr': { 'class': 'comment-form', 'id': 'idcomment' } }) }}
             </div>
         {% endif %}

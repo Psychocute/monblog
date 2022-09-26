@@ -40,20 +40,20 @@ handleCommentForm() {
 
 
 
-    const commentForm = document.querySelector('form.form-control');
-    const commentId = document.getElementById('idcomment');
-    commentId.addEventListener('submit', (e) => { e.preventDefault() 
+    // const commentForm = document.querySelector('form.form-control');
+    // const commentId = document.getElementById('idcomment');
+    // commentId.addEventListener('submit', (e) => { e.preventDefault() 
     
-            alert('pouic')});
+    //         alert('pouic')});
 
-    commentId.addEventListener('submit', async(e) => {
-        e.preventDefault();
+    // commentId.addEventListener('submit', async(e) => {
+    //     e.preventDefault();
 
-        const response = await fetch('/ajax/comments', {
-            method: 'POST',
-            body: new FormData(e.target)
-        });
-        console.log(response)
+    //     const response = await fetch('/comments/create', {
+    //         method: 'POST',
+    //         body: new FormData(e.target)
+    //     });
+    //    console.log(commentId)
  
 
         // if(!response.ok) {
@@ -62,18 +62,18 @@ handleCommentForm() {
 
         // const json = await response.json();
 
-        // console.log(json);
+    //     console.log(json);
 
-        // if (json.code === 'COMMENT_ADDED_SUCCESSFULLY') {
-        //     const commentsList = document.querySelector('.comment-list');
-        //     const commentCount = document.querySelector('#comment-count');
-        //     const commentFormContent = document.querySelector('#comment_form_content');
-        //     commentsList.insertAdjacentHTML('beforeend', json.message);
-        //     commentsList.lastElementChild.scrollIntoView();
-        //     commentCount.innerText = json.numberOfComments;
-        //     commentFormContent.value = '';
-        // }
-    })
+    //     if (json.code === 'COMMENT_ADDED_SUCCESSFULLY') {
+    //         const commentsList = document.querySelector('.comment-list');
+    //         const commentCount = document.querySelector('#comment-count');
+    //         const commentFormContent = document.querySelector('#comment_form_content');
+    //         commentsList.insertAdjacentHTML('beforeend', json.message);
+    //         commentsList.lastElementChild.scrollIntoView();
+    //         commentCount.innerText = json.numberOfComments;
+    //         commentFormContent.value = '';
+    //     }
+    // })
 
 }
 

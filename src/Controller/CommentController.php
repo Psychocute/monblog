@@ -3,8 +3,10 @@
 namespace App\Controller;
 
 use App\Entity\Comment;
+use App\Form\Type\CommentType;
 use App\Repository\ArticleRepository;
 use App\Repository\CommentRepository;
+use App\Service\CommentService;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,55 +20,51 @@ class CommentController extends AbstractController
         ArticleRepository $articleRepo, 
         EntityManagerInterface $em, 
         CommentRepository $commentRepo
-        ): Response
+        )
 
-    {
-        $commentData = $request->request->all('comment');
+    { 
+    
+        }
 
-        // if(!$this->isCsrfTokenValid('comment-add', $commentData['_token'])) {
-        //     return $this->json([
-        //         'code'=> 'INVALID_CSRF_TOKEN'],
-        //         Response::HTTP_BAD_REQUEST);
-        // }
+        #[Route('/comments/create', name: 'comment_add')]
+        public function createComments(Request $request, 
+            ArticleRepository $articleRepo, 
+            EntityManagerInterface $em, 
+            CommentRepository $commentRepo,
+            CommentService $commentService
+            ): Response
 
-        $article = $articleRepo->findByOne(['id'=> $commentData['article']]);
+        {
 
-        dd($commentData);
+            $commentData = $request->request->all('comment');
 
-        // if(!$article) {
-        //     return $this->json([
-        //         'code' => 'ARTICLE_NOT_FOUND'],
-        //         Response::HTTP_BAD_REQUEST);
-        // }
+            $article = $articleRepo->find($commentData['article']);
 
-        $user = $this->getUser();
+            $user = $this->getUser();
 
-        // if(!$user){
-        //     return $this->json([
-        //         'code' => 'USER_NOT_AUTHENTICATED_FULLY'
-        //     ], Response::HTTP_BAD_REQUEST);
-        // }
+            $comment = new Comment($article);
+            $comment->setContent($commentData['content']);
+            $comment->setUser($user);
+            $comment->setCreatedAt(new \DateTime());
 
-        $comment = new Comment($article);
-        dump($comment);
-        $comment->setContent($commentData['content']);
-        $comment->setUser($user);
-        $comment->setCreatedAt(new \DateTime());
-        
-        var_dump($comment);
-        $em->persist($comment);
+            $em->persist($comment);
+            $em->flush();
 
-        $em->flush();
+            // return $this->redirectToRoute('article_show');
+            $commment = New Comment($article);
 
-        $html = $this->renderView('comment/index.html.twig', [
-            'comment' => $comment 
-        ]);
+            // $commentForm = $this->createForm(CommentType::class, $commment);
+            $commentForm = $this->createForm(CommentType::class, $commment, [
+                'action' => $this->generateUrl('comment_add'),
+                'method' => 'POST',
+            ]);
+    
 
-        return $this->json([
-            'code'=> 'COMMENT_ADDED_SUCCESSFULLY',
-            'message' => $html,
-            'numberOfComments' => $commentRepo->count(
-                ['article' => $article ])
-        ]);
+            return $this->renderForm('article/index.html.twig', [
+                'article' => $article,
+                'comments' => $commentService->getPaginatedComments($article),
+                'commentForm' => $commentForm
+            ]);
+        }
+
     }
-}
